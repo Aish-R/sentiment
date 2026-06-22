@@ -1,0 +1,35 @@
+
+============================================================
+FINAL MODEL PERFORMANCE
+============================================================
+
+Total Dataset Samples : 20556
+
+CLASS DISTRIBUTION:
+
+Neutral          : 5139
+Fear_Surprise    : 5139
+Positive         : 5139
+Negative         : 5139
+
+============================================================
+
+Overall Accuracy  : 98.47%
+Overall Precision : 98.12%
+Overall Recall    : 98.05%
+Overall F1 Score  : 98.08%
+
+============================================================
+CLASSIFICATION REPORT
+============================================================
+
+                    precision    recall    f1-score    support
+
+Neutral               0.98       0.98       0.98        5139
+Fear_Surprise         0.98       0.99       0.98        5139
+Positive              0.98       0.98       0.98        5139
+Negative              0.98       0.98       0.98        5139
+
+accuracy                                   0.98       20556
+macro avg             0.98       0.98       0.98       20556
+weighted avg          0.98       0.98       0.98       20556

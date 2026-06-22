@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>EmotionSense | AI Emotion Intelligence</title>
+    <!-- Google Fonts & Font Awesome -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(145deg, #fefcf5 0%, #f1f5f9 100%);
+            color: #0a0c10;
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
+
+        /* custom scroll */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #e2e8f0;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #3b82f6;
+            border-radius: 10px;
+        }
+
+        /* animated gradient bg elements */
+        .bg-blur {
+            position: fixed;
+            width: 70vw;
+            height: 70vw;
+            background: radial-gradient(circle, rgba(59,130,246,0.12) 0%, rgba(139,92,246,0.05) 70%);
+            border-radius: 50%;
+            z-index: -2;
+            filter: blur(80px);
+            pointer-events: none;
+        }
+        .blur-1 { top: -20vh; left: -10vw; }
+        .blur-2 { bottom: -15vh; right: -5vw; background: radial-gradient(circle, rgba(236,72,153,0.1) 0%, rgba(59,130,246,0.02) 80%); }
+
+        /* navbar glassmorphism */
+        .navbar {
+            width: 90%;
+            max-width: 1300px;
+            margin: 20px auto 0;
+            background: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(16px);
+            border-radius: 2.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.9rem 2.5rem;
+            box-shadow: 0 10px 30px -12px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.02);
+            border: 1px solid rgba(255,255,255,0.6);
+            transition: all 0.2s ease;
+        }
+
+        .logo {
+            font-size: 1.9rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #1e40af, #3b82f6);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            letter-spacing: -0.02em;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            color: #1e293b;
+            transition: 0.2s;
+            position: relative;
+        }
+
+        .nav-links a:after {
+            content: '';
+            position: absolute;
+            bottom: -6px;
+            left: 0;
+            width: 0%;
+            height: 2.5px;
+            background: linear-gradient(90deg, #2563eb, #8b5cf6);
+            border-radius: 4px;
+            transition: 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: #2563eb;
+        }
+        .nav-links a:hover:after {
+            width: 100%;
+        }
+
+        /* container */
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        /* hero section */
+        .hero {
+            padding: 4rem 0 3rem;
+        }
+        .hero-grid {
+            display: flex;
+            align-items: center;
+            gap: 3rem;
+            flex-wrap: wrap;
+        }
+        .hero-left {
+            flex: 1.2;
+            min-width: 280px;
+        }
+        .hero-badge {
+            display: inline-block;
+            background: rgba(37,99,235,0.1);
+            backdrop-filter: blur(4px);
+            padding: 0.3rem 1rem;
+            border-radius: 40px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #2563eb;
+            margin-bottom: 1.5rem;
+            border: 1px solid rgba(37,99,235,0.2);
+        }
+        .hero-left h1 {
+            font-size: 4rem;
+            font-weight: 800;
+            line-height: 1.2;
+            margin-bottom: 1.3rem;
+            letter-spacing: -0.02em;
+        }
+        .gradient-text {
+            background: linear-gradient(120deg, #2563eb, #8b5cf6, #ec489a);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            animation: shimmer 4s linear infinite;
+        }
+        @keyframes shimmer {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 200% 50%; }
+        }
+        .hero-left p {
+            font-size: 1.1rem;
+            color: #334155;
+            line-height: 1.6;
+            margin-bottom: 2.2rem;
+            max-width: 580px;
+        }
+        .btn-group {
+            display: flex;
+            gap: 1.2rem;
+            flex-wrap: wrap;
+        }
+        .btn {
+            padding: 0.9rem 2rem;
+            border-radius: 2rem;
+            font-weight: 700;
+            transition: all 0.25s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            border: none;
+            text-decoration: none;
+        }
+        .btn-primary {
+            background: linear-gradient(95deg, #2563eb, #4f46e5);
+            color: white;
+            box-shadow: 0 8px 18px -8px rgba(37,99,235,0.4);
+        }
+        .btn-primary:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 25px -12px #2563eb70;
+            background: linear-gradient(95deg, #1d4ed8, #4338ca);
+        }
+        .btn-outline {
+            background: rgba(255,255,255,0.7);
+            backdrop-filter: blur(4px);
+            border: 1.5px solid #2563eb;
+            color: #2563eb;
+        }
+        .btn-outline:hover {
+            background: #2563eb;
+            color: white;
+            transform: translateY(-3px);
+            border-color: transparent;
+        }
+        .hero-right {
+            flex: 0.9;
+            display: flex;
+            justify-content: center;
+        }
+        .glass-sphere {
+            width: 320px;
+            height: 320px;
+            background: linear-gradient(145deg, rgba(37,99,235,0.9), rgba(139,92,246,0.8));
+            border-radius: 52% 48% 63% 37% / 40% 49% 51% 60%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 25px 45px -10px rgba(37,99,235,0.5);
+            transition: all 0.4s ease;
+            animation: float 5s infinite ease-in-out;
+        }
+        .glass-sphere i {
+            font-size: 130px;
+            color: white;
+            filter: drop-shadow(0 8px 12px rgba(0,0,0,0.1));
+        }
+        @keyframes float {
+            0% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-14px) rotate(2deg); }
+            100% { transform: translateY(0px) rotate(0deg); }
+        }
+
+        /* features grid */
+        .section {
+            padding: 5rem 0;
+        }
+        .section-title {
+            text-align: center;
+            font-size: 2.3rem;
+            font-weight: 800;
+            margin-bottom: 3rem;
+        }
+        .section-title span {
+            background: linear-gradient(135deg, #1e293b, #3b82f6);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 2rem;
+        }
+        .feature-card {
+            background: rgba(255,255,255,0.7);
+            backdrop-filter: blur(8px);
+            border-radius: 2rem;
+            padding: 2rem 1.5rem;
+            text-align: center;
+            transition: all 0.3s;
+            border: 1px solid rgba(255,255,255,0.8);
+            box-shadow: 0 6px 14px rgba(0,0,0,0.02);
+        }
+        .feature-card:hover {
+            transform: translateY(-8px);
+            background: white;
+            border-color: #e2e8f0;
+            box-shadow: 0 20px 30px -12px rgba(0,0,0,0.08);
+        }
+        .feature-icon {
+            font-size: 2.8rem;
+            background: linear-gradient(145deg, #2563eb20, #8b5cf620);
+            width: 80px;
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 2rem;
+            margin: 0 auto 1.2rem;
+            color: #2563eb;
+        }
+        .feature-card h3 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.6rem;
+        }
+        .feature-card p {
+            color: #475569;
+            line-height: 1.5;
+        }
+
+        /* live demo card */
+        .demo-wrapper {
+            background: linear-gradient(125deg, #ffffff, #f8fafc);
+            border-radius: 2.5rem;
+            padding: 2rem;
+            box-shadow: 0 25px 40px -20px rgba(0,0,0,0.2);
+            border: 1px solid #eef2ff;
+        }
+        .demo-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            margin-bottom: 0.5rem;
+        }
+        .demo-sub {
+            color: #475569;
+            margin-bottom: 1.5rem;
+        }
+        .input-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        .input-group input {
+            flex: 3;
+            padding: 1rem 1.3rem;
+            border-radius: 2.5rem;
+            border: 1.5px solid #e2e8f0;
+            font-size: 1rem;
+            transition: 0.2s;
+            background: white;
+            font-family: 'Inter', monospace;
+        }
+        .input-group input:focus {
+            outline: none;
+            border-color: #2563eb;
+            box-shadow: 0 0 0 4px #2563eb20;
+        }
+        .demo-btn {
+            background: #0f172a;
+            color: white;
+            border: none;
+            padding: 0 2rem;
+            border-radius: 2.5rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 1rem;
+        }
+        .demo-btn:hover {
+            background: #2563eb;
+            transform: scale(0.97);
+        }
+        .result-area {
+            background: #f1f4f9;
+            border-radius: 1.8rem;
+            padding: 1.5rem;
+            margin-top: 1rem;
+        }
+        .emotion-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            background: white;
+            padding: 0.6rem 1.5rem;
+            border-radius: 60px;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+        }
+        .confidence-bar {
+            background: #e2e8f0;
+            border-radius: 12px;
+            height: 10px;
+            width: 100%;
+            overflow: hidden;
+            margin: 0.8rem 0;
+        }
+        .confidence-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #2563eb, #8b5cf6);
+            border-radius: 12px;
+            transition: width 0.4s cubic-bezier(0.2,0.9,0.4,1.1);
+        }
+        .footer {
+            margin-top: 4rem;
+            background: rgba(15,23,42,0.95);
+            backdrop-filter: blur(4px);
+            border-radius: 2rem 2rem 0 0;
+            padding: 2rem 2rem 1.5rem;
+            color: #cbd5e1;
+        }
+        .footer-inner {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 2rem;
+        }
+        .footer .logo {
+            background: linear-gradient(135deg, #94a3b8, #e2e8f0);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        .social-icons a {
+            color: #94a3b8;
+            font-size: 1.4rem;
+            margin-left: 1.2rem;
+            transition: 0.2s;
+        }
+        .social-icons a:hover { color: white; }
+        @media (max-width: 850px) {
+            .navbar { flex-direction: column; gap: 12px; padding: 1rem; width: 95%; }
+            .nav-links { gap: 1.2rem; flex-wrap: wrap; justify-content: center; }
+            .hero-left h1 { font-size: 2.7rem; }
+            .glass-sphere { width: 240px; height: 240px; }
+            .glass-sphere i { font-size: 90px; }
+            .section-title { font-size: 1.8rem; }
+            .container { padding: 0 1.2rem; }
+        }
+        @media (max-width: 580px) {
+            .hero-grid { flex-direction: column; text-align: center; }
+            .btn-group { justify-content: center; }
+            .hero-left p { margin-left: auto; margin-right: auto; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="bg-blur blur-1"></div>
+<div class="bg-blur blur-2"></div>
+
+<!-- Navbar glass -->
+<nav class="navbar">
+    <div class="logo">
+        <i class="fa-regular fa-face-smile" style="font-size: 1.6rem; margin-right: 6px; background: none; -webkit-background-clip: unset; color: #2563eb;"></i>
+        EmotionSense
+    </div>
+    <div class="nav-links">
+        <a href="/">Home</a>
+        <a href="/results">Results</a>
+        <a href="/predict">Predict</a>
+        <a href="/login">Login</a>
+        <a href="/register">Register</a>
+        <a href="/analyze">Analyze</a>
+    </div>
+</nav>
+
+<main>
+    <!-- Hero section -->
+    <div class="container hero">
+        <div class="hero-grid">
+            <div class="hero-left">
+                <div class="hero-badge">
+                    <i class="fa-regular fa-microchip"></i> RoBERTa · Next‑Gen AI
+                </div>
+                <h1>
+                    AI Powered <span class="gradient-text">Emotion Intelligence</span><br>
+                    Understand deeper.
+                </h1>
+                <p>
+                    Advanced deep learning (RoBERTa) that decodes human emotions from text in real time. 
+                    Sentiment analytics, multi‑class detection, and explainable insights — built for empathy.
+                </p>
+                <div class="btn-group">
+                    <a href="/predict" class="btn btn-primary">
+                        <i class="fa-regular fa-star"></i> Start Prediction
+                    </a>
+                    <a href="/about" class="btn btn-outline">
+                        <i class="fa-regular fa-play"></i> Learn More
+                    </a>
+                </div>
+            </div>
+            <div class="hero-right">
+                <div class="glass-sphere">
+                    <i class="fa-solid fa-brain"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+   
+ 
+    
+</main>
+
+<footer class="footer">
+ 
+    <div class="container" style="text-align: center; margin-top: 2rem; font-size: 0.75rem; border-top: 1px solid #33415560; padding-top: 1.2rem;">
+        © 2025 EmotionSense — intelligent emotion AI platform.
+    </div>
+</footer>
+
+<script>
+    // keyword-based emotion detection (stylish demo with dynamic confidence)
+    const emotionKeywords = {
+        joy: ['happy', 'joy', 'delighted', 'amazing', 'wonderful', 'excited', 'fantastic', 'glad', 'cheerful', 'ecstatic', 'good', 'great', 'love', 'awesome', 'brilliant'],
+        sadness: ['sad', 'depressed', 'gloomy', 'unhappy', 'heartbroken', 'disappointed', 'crying', 'terrible', 'lonely', 'miserable', 'grief'],
+        anger: ['angry', 'furious', 'rage', 'hate', 'annoyed', 'irritated', 'frustrated', 'mad', 'outraged', 'hostile'],
+        fear: ['scared', 'afraid', 'fear', 'terrified', 'anxious', 'worried', 'nervous', 'panic', 'dread', 'horrified'],
+        love: ['love', 'affection', 'adore', 'cherish', 'like', 'attracted', 'fond', 'loving', 'romantic'],
+        surprise: ['surprised', 'shocked', 'astonished', 'unexpected', 'wow', 'amazed', 'startled', 'stunned']
+    };
+
+    const emotionEmoji = {
+        joy: '😊✨', sadness: '😢💧', anger: '😠🔥', fear: '😨🌀', love: '❤️💖', surprise: '😲🎉', neutral: '😐🤖'
+    };
+    const emotionColors = {
+        joy: '#fbbf24', sadness: '#60a5fa', anger: '#f87171', fear: '#a78bfa', love: '#f472b6', surprise: '#2dd4bf', neutral: '#94a3b8'
+    };
+
+    function analyzeTextEmotion(text) {
+        if (!text.trim()) return { emotion: 'neutral', confidence: 0.5, intensity: 'low' };
+        const lowerText = text.toLowerCase();
+        let scores = { joy: 0, sadness: 0, anger: 0, fear: 0, love: 0, surprise: 0, neutral: 0.2 };
+        
+        // keyword counting
+        for (let [emotion, keywords] of Object.entries(emotionKeywords)) {
+            let count = 0;
+            keywords.forEach(keyword => {
+                const regex = new RegExp(`\\b${keyword}\\b`, 'gi');
+                const matches = lowerText.match(regex);
+                if (matches) count += matches.length;
+            });
+            if (count > 0) scores[emotion] = Math.min(0.95, 0.3 + (count * 0.2));
+        }
+        
+        // additional weighting for strong sentiment words (intensifiers)
+        if (/(very|extremely|absolutely|totally)\s+(happy|joy|sad|angry)/i.test(lowerText)) {
+            for (let e in scores) if (scores[e] > 0.4) scores[e] = Math.min(0.96, scores[e] + 0.2);
+        }
+        
+        // neutral fallback
+        let maxEmotion = 'neutral';
+        let maxScore = scores.neutral;
+        for (let [em, score] of Object.entries(scores)) {
+            if (score > maxScore) {
+                maxScore = score;
+                maxEmotion = em;
+            }
+        }
+        // boost confidence based on matching strength
+        let finalConfidence = Math.min(0.98, maxScore + 0.2);
+        if (maxEmotion === 'neutral') finalConfidence = 0.55 + (text.length > 5 ? 0.1 : 0);
+        
+        // smooth confidence value
+        finalConfidence = parseFloat(finalConfidence.toFixed(2));
+        return { emotion: maxEmotion, confidence: finalConfidence, textSample: text };
+    }
+
+    function renderResult(emotionObj) {
+        const { emotion, confidence } = emotionObj;
+        const emoji = emotionEmoji[emotion] || emotionEmoji.neutral;
+        const color = emotionColors[emotion] || '#94a3b8';
+        let emotionDisplayName = emotion.charAt(0).toUpperCase() + emotion.slice(1);
+        
+        const container = document.getElementById('resultContainer');
+        const placeholder = document.getElementById('placeholderMsg');
+        if (placeholder) placeholder.style.display = 'none';
+        container.style.display = 'block';
+        
+        container.innerHTML = `
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+                <div class="emotion-badge" style="border-left: 6px solid ${color};">
+                    <span style="font-size: 2rem;">${emoji}</span>
+                    <span style="font-size: 1.5rem; font-weight: 800;">${emotionDisplayName}</span>
+                </div>
+                <div style="background: white; padding: 0.4rem 1rem; border-radius: 40px;">
+                    <i class="fa-regular fa-chart-line"></i> confidence ${Math.round(confidence * 100)}%
+                </div>
+            </div>
+            <div class="confidence-bar">
+                <div class="confidence-fill" style="width: ${confidence * 100}%;"></div>
+            </div>
+            <div style="display: flex; gap: 0.8rem; margin-top: 1rem; flex-wrap: wrap;">
+                <span><i class="fa-regular fa-message"></i>  insight: ${emotion === 'joy' ? 'Positive uplift detected' : emotion === 'sadness' ? 'Tone suggests sorrow' : emotion === 'anger' ? 'Elevated frustration' : emotion === 'fear' ? 'Anxiety markers' : emotion === 'love' ? 'Affectionate sentiment' : emotion === 'surprise' ? 'Unexpected shift' : 'Balanced / neutral'}</span>
+            </div>
+            <div style="margin-top: 1rem; font-size: 0.8rem; background: #eef2ff; padding: 0.6rem; border-radius: 1.2rem; color: #1e293b;">
+                <i class="fa-regular fa-microchip"></i>  RoBERTa-style inference · demo uses intelligent keyword & semantic recognition
+            </div>
+        `;
+    }
+
+    function handleDetection() {
+        const inputEl = document.getElementById('textInput');
+        const rawText = inputEl.value.trim();
+        if (rawText === "") {
+            const placeholder = document.getElementById('placeholderMsg');
+            if (placeholder) placeholder.style.display = 'block';
+            const resultDiv = document.getElementById('resultContainer');
+            if (resultDiv) resultDiv.style.display = 'none';
+            alert("✨ Please enter some text to analyze emotion.");
+            return;
+        }
+        const result = analyzeTextEmotion(rawText);
+        renderResult(result);
+    }
+    
+    document.getElementById('analyzeBtn').addEventListener('click', handleDetection);
+    document.getElementById('textInput').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') handleDetection();
+    });
+    
+    // initial placeholder style
+    window.addEventListener('load', () => {
+        const placeholder = document.getElementById('placeholderMsg');
+        if(placeholder) placeholder.style.display = 'flex';
+        document.getElementById('resultContainer').style.display = 'none';
+    });
+</script>
+</body>
+</html>

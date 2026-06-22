@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>EmotionSense | NLP Analytics Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #f6f9fc 0%, #eef2f9 100%);
+            color: #0a0c10;
+            overflow-x: hidden;
+        }
+
+        /* ========== NAVBAR (unchanged, exactly as requested) ========== */
+        .navbar {
+            width: 90%;
+            max-width: 1300px;
+            margin: 1.2rem auto 0;
+            background: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(18px);
+            border-radius: 3rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.8rem 2.2rem;
+            box-shadow: 0 12px 30px -10px rgba(0, 0, 0, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.7);
+            transition: 0.2s;
+            flex-wrap: wrap;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #1e40af, #3b82f6);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            letter-spacing: -0.3px;
+        }
+
+        .logo i {
+            background: none;
+            -webkit-background-clip: unset;
+            color: #2563eb;
+            font-size: 1.8rem;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            color: #1e293b;
+            transition: 0.2s;
+            position: relative;
+        }
+
+        .nav-links a:after {
+            content: '';
+            position: absolute;
+            bottom: -6px;
+            left: 0;
+            width: 0%;
+            height: 2.5px;
+            background: linear-gradient(90deg, #2563eb, #8b5cf6);
+            border-radius: 4px;
+            transition: 0.25s;
+        }
+
+        .nav-links a:hover {
+            color: #2563eb;
+        }
+
+        .nav-links a:hover:after {
+            width: 100%;
+        }
+
+        .user-area {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            background: rgba(255, 255, 240, 0.5);
+            padding: 0.3rem 1rem 0.3rem 1.2rem;
+            border-radius: 2rem;
+            backdrop-filter: blur(4px);
+        }
+
+        .welcome-badge {
+            font-weight: 700;
+            color: #1e293b;
+            background: white;
+            padding: 0.4rem 1.2rem;
+            border-radius: 2rem;
+            font-size: 0.85rem;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .welcome-badge i {
+            color: #2563eb;
+        }
+
+        .logout-btn {
+            background: rgba(220, 38, 38, 0.9);
+            color: white;
+            border: none;
+            padding: 0.5rem 1.2rem;
+            border-radius: 2rem;
+            font-weight: 700;
+            font-size: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: 0.2s;
+            text-decoration: none;
+        }
+
+        .logout-btn:hover {
+            background: #dc2626;
+            transform: translateY(-2px);
+        }
+
+        .back-home {
+            background: transparent;
+            border: 1.5px solid #2563eb;
+            color: #2563eb;
+            padding: 0.5rem 1.2rem;
+            border-radius: 2rem;
+            font-weight: 600;
+            font-size: 0.8rem;
+            transition: 0.2s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .back-home:hover {
+            background: #2563eb;
+            color: white;
+        }
+
+        /* ========== MAIN LAYOUT (UPGRADED) ========== */
+        .dashboard-main {
+            display: flex;
+            max-width: 1600px;
+            margin: 2rem auto;
+            padding: 0 1.5rem;
+            gap: 2rem;
+        }
+
+        /* SIDEBAR - modern glass + elegant buttons */
+        .analytics-sidebar {
+            width: 320px;
+            background: rgba(255, 255, 255, 0.65);
+            backdrop-filter: blur(14px);
+            border-radius: 2rem;
+            padding: 1.5rem 1.2rem;
+            box-shadow: 0 12px 28px -8px rgba(0, 0, 0, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.7);
+            height: fit-content;
+            transition: all 0.2s;
+        }
+
+        .analytics-sidebar h2 {
+            font-size: 1.5rem;
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(105deg, #1e293b, #2563eb);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .upload-box {
+            margin-bottom: 1.8rem;
+        }
+
+        .upload-box label {
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: #2c3e66;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        .upload-box input {
+            width: 100%;
+            padding: 0.9rem 1rem;
+            border: 2px dashed #cbd5e1;
+            border-radius: 1.5rem;
+            background: #ffffffcc;
+            font-size: 0.85rem;
+            transition: 0.2s;
+            cursor: pointer;
+        }
+
+        .upload-box input:hover {
+            border-color: #3b82f6;
+            background: white;
+        }
+
+        .btn-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 0.9rem;
+        }
+
+        .graph-btn {
+            width: 100%;
+            padding: 0.85rem 1rem;
+            border: none;
+            border-radius: 2rem;
+            background: rgba(255, 255, 255, 0.9);
+            color: #1f2a48;
+            font-weight: 700;
+            font-size: 0.85rem;
+            text-align: left;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            transition: all 0.25s;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.02);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+        }
+
+        .graph-btn i {
+            width: 28px;
+            font-size: 1.2rem;
+            color: #3b82f6;
+        }
+
+        .graph-btn:hover {
+            background: linear-gradient(95deg, #2563eb, #4f46e5);
+            color: white;
+            transform: translateX(5px);
+            box-shadow: 0 10px 18px -8px rgba(37, 99, 235, 0.3);
+            border-color: transparent;
+        }
+
+        .graph-btn:hover i {
+            color: white;
+        }
+
+        .graph-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* content area */
+        .analytics-content {
+            flex: 1;
+        }
+
+        /* metric cards */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.2rem;
+            margin-bottom: 2rem;
+        }
+
+        .metric-card {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            border-radius: 1.8rem;
+            padding: 1.3rem;
+            border: 1px solid rgba(255, 255, 255, 0.7);
+            transition: 0.2s;
+            box-shadow: 0 6px 14px rgba(0, 0, 0, 0.02);
+        }
+
+        .metric-card h3 {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #4b5565;
+            letter-spacing: 0.3px;
+            margin-bottom: 8px;
+        }
+
+        .metric-card h1 {
+            font-size: 2.6rem;
+            font-weight: 800;
+            background: linear-gradient(125deg, #1e293b, #2563eb);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        /* chart container */
+        .chart-panel {
+            background: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(12px);
+            border-radius: 2rem;
+            padding: 1.8rem;
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            box-shadow: 0 20px 35px -12px rgba(0, 0, 0, 0.05);
+        }
+
+        .chart-title {
+            font-size: 1.6rem;
+            font-weight: 800;
+            margin-bottom: 1.2rem;
+            color: #0f172a;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        #uploadMessage {
+            text-align: center;
+            padding: 3rem;
+            color: #5b6e8c;
+            font-weight: 500;
+        }
+
+        canvas {
+            max-height: 500px;
+            width: 100% !important;
+        }
+
+        .data-table {
+            overflow-x: auto;
+            margin-top: 1.5rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            border-radius: 1.5rem;
+            background: rgba(255, 255, 255, 0.7);
+        }
+
+        th {
+            background: #2563eb;
+            color: white;
+            padding: 12px;
+            font-weight: 600;
+        }
+
+        td {
+            padding: 10px;
+            border-bottom: 1px solid #e2e8f0;
+            text-align: center;
+        }
+
+        @media (max-width: 900px) {
+            .dashboard-main {
+                flex-direction: column;
+                padding: 0 1rem;
+            }
+            .analytics-sidebar {
+                width: 100%;
+            }
+            .navbar {
+                width: 95%;
+                padding: 0.7rem 1.2rem;
+            }
+            .user-area {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- Navbar (exactly as provided, unchanged) -->
+<nav class="navbar">
+    <div class="logo">
+        <i class="fa-regular fa-face-smile"></i> EmotionSense
+    </div>
+    <div class="user-area">
+        <a href="{{ url_for('index') }}" class="back-home">
+            <i class="fa-regular fa-home"></i> Back Home
+        </a>
+        <div class="welcome-badge">
+            <i class="fa-regular fa-user-circle"></i> Welcome, {{ session['username'] }}
+        </div>
+        <a href="{{ url_for('logout') }}" class="logout-btn">
+            <i class="fa-regular fa-arrow-right-from-bracket"></i> Logout
+        </a>
+    </div>
+</nav>
+
+<!-- Dashboard main area (enhanced buttons & graph display) -->
+<div class="dashboard-main">
+    <!-- Sidebar with upgraded buttons -->
+    <div class="analytics-sidebar">
+        <h2><i class="fa-regular fa-chart-line"></i> NLP Intelligence</h2>
+        <div class="upload-box">
+            <label><i class="fa-regular fa-cloud-arrow-up"></i> Upload CSV Dataset</label>
+            <input type="file" id="csvFile" accept=".csv">
+        </div>
+        <div class="btn-grid">
+            <button class="graph-btn" disabled onclick="overallAnalysis()"><i class="fa-regular fa-chart-simple"></i> Overall Analysis</button>
+            <button class="graph-btn" disabled onclick="emotionChart()"><i class="fa-regular fa-face-smile"></i> 4‑Class Emotion</button>
+            <button class="graph-btn" disabled onclick="labelChart()"><i class="fa-regular fa-tags"></i> Label Distribution</button>
+            <button class="graph-btn" disabled onclick="platformChart()"><i class="fa-regular fa-layer-group"></i> Platform Insights</button>
+            <button class="graph-btn" disabled onclick="subredditChart()"><i class="fa-regular fa-reddit-alien"></i> Subreddit Trends</button>
+            <button class="graph-btn" disabled onclick="intensityChart()"><i class="fa-regular fa-waveform"></i> Emotion Intensity</button>
+            <button class="graph-btn" disabled onclick="wordChart()"><i class="fa-regular fa-chart-line"></i> Word Count Trend</button>
+            <button class="graph-btn" disabled onclick="lengthChart()"><i class="fa-regular fa-text-height"></i> Text Length</button>
+         
+            <button class="graph-btn" disabled onclick="uppercaseChart()"><i class="fa-regular fa-arrow-up"></i> Uppercase Count</button>
+            <button class="graph-btn" disabled onclick="punctuationChart()"><i class="fa-regular fa-quote-left"></i> Punctuation</button>
+            <button class="graph-btn" disabled onclick="subjectivityChart()"><i class="fa-regular fa-face-smile"></i> Subjectivity Radar</button>
+            <button class="graph-btn" disabled onclick="bubbleChart()"><i class="fa-regular fa-chart-scatter"></i> Bubble NLP</button>
+            <button class="graph-btn" disabled onclick="radarChart()"><i class="fa-regular fa-star-of-life"></i> Writing Radar</button>
+            <button class="graph-btn" disabled onclick="topWordsChart()"><i class="fa-regular fa-keyboard"></i> Top 15 Words</button>
+            <button class="graph-btn" disabled onclick="emotionTextChart()"><i class="fa-regular fa-message"></i> Emotion vs Length</button>
+        </div>
+    </div>
+
+    <!-- Right content: metrics + chart -->
+    <div class="analytics-content">
+        <div class="metrics-grid">
+            <div class="metric-card"><h3><i class="fa-regular fa-table"></i> Total Rows</h3><h1 id="rows">0</h1></div>
+            <div class="metric-card"><h3><i class="fa-regular fa-columns"></i> Total Columns</h3><h1 id="cols">0</h1></div>
+            <div class="metric-card"><h3><i class="fa-regular fa-globe"></i> Platforms</h3><h1 id="platforms">0</h1></div>
+            <div class="metric-card"><h3><i class="fa-regular fa-heart"></i> Emotion Types</h3><h1 id="emotions">0</h1></div>
+        </div>
+
+        <div class="chart-panel">
+            <div class="chart-title" id="chartTitle">
+                <i class="fa-regular fa-chart-pie"></i> Upload Dataset to Explore
+            </div>
+            <div id="uploadMessage">
+                <i class="fa-regular fa-cloud-arrow-up fa-2x" style="opacity:0.6;"></i>
+                <p style="margin-top:12px;">Upload your NLP dataset (CSV) to reveal emotion analytics.</p>
+            </div>
+            <canvas id="myChart" style="display: none;"></canvas>
+            <div id="tableContainer"></div>
+        </div>
+    </div>
+</div>
+
+<script>
+    let dataset = [];
+    let chart;
+    const chartColors = ['#ff6b6b', '#feca57', '#48dbfb', '#1dd1a1', '#5f27cd', '#ff9ff3', '#54a0ff', '#00d2d3', '#ff9f43', '#10ac84', '#ee5253', '#341f97', '#2e86de', '#e84393', '#6c5ce7', '#00cec9'];
+
+    // Helper to safely get numeric column
+    function safeNum(row, col, def = 0) {
+        let val = row[col];
+        if (val === undefined || val === null) return def;
+        let parsed = parseFloat(val);
+        return isNaN(parsed) ? def : parsed;
+    }
+
+    // clear previous chart/table
+    function clearChart() {
+        document.getElementById('tableContainer').innerHTML = "";
+        const canvas = document.getElementById('myChart');
+        canvas.style.display = "block";
+        document.getElementById('uploadMessage').style.display = "none";
+        if (chart) {
+            chart.destroy();
+        }
+    }
+
+    // CSV Upload handler
+    document.getElementById('csvFile').addEventListener('change', function(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+        Papa.parse(file, {
+            header: true,
+            skipEmptyLines: true,
+            complete: function(results) {
+                dataset = results.data;
+                if (!dataset.length) return;
+                const headers = Object.keys(dataset[0]);
+                document.getElementById('rows').innerHTML = dataset.length;
+                document.getElementById('cols').innerHTML = headers.length;
+                
+                let platforms = new Set();
+                let emotions = new Set();
+                dataset.forEach(row => {
+                    if (row.platform) platforms.add(row.platform);
+                    let em = row.label_name || row.emotion;
+                    if (em) emotions.add(em);
+                });
+                document.getElementById('platforms').innerHTML = platforms.size;
+                document.getElementById('emotions').innerHTML = emotions.size;
+                
+                // enable all buttons
+                document.querySelectorAll('.graph-btn').forEach(btn => btn.disabled = false);
+                document.getElementById('uploadMessage').style.display = "none";
+                document.getElementById('myChart').style.display = "block";
+                overallAnalysis();
+                // optional success alert but without heavy interruption
+                console.log("Dataset ready");
+            },
+            error: function(err) { alert("Error parsing CSV: " + err.message); }
+        });
+    });
+
+    // 1. Overall Analysis
+    function overallAnalysis() {
+        if (!dataset.length) return;
+        clearChart();
+        document.getElementById('chartTitle').innerHTML = '<i class="fa-regular fa-chart-column"></i> Overall NLP Metrics';
+        const cols = ['word_count', 'text_length', 'avg_word_length', 'uppercase_count', 'punctuation_count'];
+        let values = cols.map(col => {
+            let sum = 0;
+            dataset.forEach(row => sum += safeNum(row, col));
+            return (sum / dataset.length).toFixed(2);
+        });
+        chart = new Chart(document.getElementById('myChart'), {
+            type: 'bar',
+            data: { labels: cols, datasets: [{ label: 'Average Value', data: values, backgroundColor: chartColors.slice(0, cols.length), borderRadius: 12 }] },
+            options: { responsive: true, maintainAspectRatio: true }
+        });
+    }
+
+    // 2. Emotion 4-class distribution
+    function emotionChart() {
+        if (!dataset.length) return;
+        clearChart();
+        document.getElementById('chartTitle').innerHTML = '<i class="fa-regular fa-chart-simple"></i> 4-Class Emotion Distribution';
+        let counts = {};
+        dataset.forEach(row => {
+            let em = row.label_name || row.emotion || 'unknown';
+            counts[em] = (counts[em] || 0) + 1;
+        });
+        chart = new Chart(document.getElementById('myChart'), {
+            type: 'bar',
+            data: { labels: Object.keys(counts), datasets: [{ label: 'Count', data: Object.values(counts), backgroundColor: ['#ff6b6b', '#48dbfb', '#1dd1a1', '#feca57'], borderRadius: 14 }] }
+        });
+    }
+
+    // 3. Label Name Distribution (doughnut)
+    function labelChart() {
+        if (!dataset.length) return;
+        clearChart();
+        document.getElementById('chartTitle').innerHTML = '<i class="fa-regular fa-chart-pie"></i> Label Name Distribution';
+        let counts = {};
+        dataset.forEach(row => { let l = row.label_name || row.emotion || 'other'; counts[l] = (counts[l] || 0) + 1; });
+        chart = new Chart(document.getElementById('myChart'), { type: 'doughnut', data: { labels: Object.keys(counts), datasets: [{ data: Object.values(counts), backgroundColor: chartColors }] } });
+    }
+
+    function platformChart() {
+        if (!dataset.length) return;
+        clearChart();
+        document.getElementById('chartTitle').innerHTML = '<i class="fa-regular fa-layer-group"></i> Platform Distribution';
+        let counts = {};
+        dataset.forEach(row => { if (row.platform) counts[row.platform] = (counts[row.platform] || 0) + 1; });
+        chart = new Chart(document.getElementById('myChart'), { type: 'bar', data: { labels: Object.keys(counts), datasets: [{ label: 'Posts', data: Object.values(counts), backgroundColor: chartColors, borderRadius: 12 }] } });
+    }
+
+    function subredditChart() {
+        if (!dataset.length) return;
+        clearChart();
+        document.getElementById('chartTitle').innerHTML = '<i class="fa-regular fa-reddit"></i> Top Subreddits';
+        let counts = {};
+        dataset.slice(0, 1500).forEach(row => { if (row.subreddit) counts[row.subreddit] = (counts[row.subreddit] || 0) + 1; });
+        let sorted = Object.entries(counts).sort((a, b) => b[1] - a[1]).slice(0, 10);
+        chart = new Chart(document.getElementById('myChart'), { type: 'bar', data: { labels: sorted.map(s => s[0]), datasets: [{ label: 'Frequency', data: sorted.map(s => s[1]), backgroundColor: chartColors, borderRadius: 10 }] } });
+    }
+
+    function intensityChart() {
+        if (!dataset.length) return;
+        clearChart();
+        document.getElementById('chartTitle').innerHTML = '<i class="fa-regular fa-waveform"></i> Emotion Intensity';
+        let counts = {};
+        dataset.forEach(row => { let intensity = row.emotion_intensity || 'medium'; counts[intensity] = (counts[intensity] || 0) + 1; });
+        chart = new Chart(document.getElementById('myChart'), { type: 'pie', data: { labels: Object.keys(counts), datasets: [{ data: Object.values(counts), backgroundColor: chartColors }] } });
+    }
+
+    function wordChart() {
+        if (!dataset.length) return;
+        clearChart();
+        document.getElementById('chartTitle').innerHTML = '<i class="fa-regular fa-chart-line"></i> Word Count Trend (first 100)';
+        let values = dataset.slice(0, 100).map(r => safeNum(r, 'word_count'));
+        chart = new Chart(document.getElementById('myChart'), { type: 'line', data: { labels: [...Array(values.length).keys()], datasets: [{ label: 'Word Count', data: values, borderColor: '#ff6b6b', backgroundColor: 'rgba(255,107,107,0.1)', fill: true, tension: 0.3 }] } });
+    }
+
+    function lengthChart() {
+        if (!dataset.length) return;
+        clearChart();
+        document.getElementById('chartTitle').innerHTML = '<i class="fa-regular fa-ruler"></i> Text Length (first 100)';
+        let values = dataset.slice(0, 100).map(r => safeNum(r, 'text_length'));
+        chart = new Chart(document.getElementById('myChart'), { type: 'bar', data: { labels: [...Array(values.length).keys()], datasets: [{ label: 'Text Length', data: values, backgroundColor: '#48dbfb', borderRadius: 8 }] } });
+    }
+
+    // New: Unique Words Analysis
+    function uniqueWordsChart() {
+        if (!dataset.length) return;
+        clearChart();
+        document.getElementById('chartTitle').innerHTML = '<i class="fa-regular fa-spell-check"></i> Unique Words per Emotion';
+        let groups = {};
+        dataset.forEach(row => {
+            let em = row.label_name || row.emotion || 'neutral';
+            let uniqueVal = safeNum(row, 'unique_words', 0);
+            if (!groups[em]) groups[em] = { sum: 0, count: 0 };
+            groups[em].sum += uniqueVal;
+            groups[em].count += 1;
+        });
+        let labels = Object.keys(groups);
+        let avgData = labels.map(l => (groups[l].sum / groups[l].count).toFixed(2));
+        chart = new Chart(document.getElementById('myChart'), { type: 'bar', data: { labels: labels, datasets: [{ label: 'Avg Unique Words', data: avgData, backgroundColor: '#5f27cd', borderRadius: 12 }] } });
+    }
+
+    function uppercaseChart() {
+        if (!dataset.length) return;
+        clearChart();
+        document.getElementById('chartTitle').innerHTML = '<i class="fa-regular fa-arrow-up"></i> Uppercase Count (first 100)';
+        let values = dataset.slice(0, 100).map(r => safeNum(r, 'uppercase_count'));
+        chart = new Chart(document.getElementById('myChart'), { type: 'bar', data: { labels: [...Array(values.length).keys()], datasets: [{ label: 'Uppercase', data: values, backgroundColor: '#feca57', borderRadius: 8 }] } });
+    }
+
+    function punctuationChart() {
+        if (!dataset.length) return;
+        clearChart();
+        document.getElementById('chartTitle').innerHTML = '<i class="fa-regular fa-quote-left"></i> Punctuation Trend';
+        let values = dataset.slice(0, 100).map(r => safeNum(r, 'punctuation_count'));
+        chart = new Chart(document.getElementById('myChart'), { type: 'line', data: { labels: [...Array(values.length).keys()], datasets: [{ label: 'Punctuation', data: values, borderColor: '#1dd1a1', backgroundColor: 'rgba(29,209,161,0.1)', fill: true, tension: 0.3 }] } });
+    }
+
+    function subjectivityChart() {
+        if (!dataset.length) return;
+        clearChart();
+        document.getElementById('chartTitle').innerHTML = '<i class="fa-regular fa-face-smile"></i> Subjectivity Radar by Emotion';
+        let groups = {};
+        dataset.forEach(row => {
+            let em = row.label_name || row.emotion || 'neutral';
+            let subj = safeNum(row, 'subjectivity', 0.5);
+            if (!groups[em]) groups[em] = { sum: 0, count: 0 };
+            groups[em].sum += subj;
+            groups[em].count += 1;
+        });
+        let labels = Object.keys(groups);
+        let avgSubj = labels.map(l => (groups[l].sum / groups[l].count).toFixed(2));
+        chart = new Chart(document.getElementById('myChart'), { type: 'radar', data: { labels: labels, datasets: [{ label: 'Subjectivity Score', data: avgSubj, backgroundColor: 'rgba(72,219,251,0.3)', borderColor: '#48dbfb', borderWidth: 2, pointBackgroundColor: '#00cec9' }] } });
+    }
+
+    function bubbleChart() {
+        if (!dataset.length) return;
+        clearChart();
+        document.getElementById('chartTitle').innerHTML = '<i class="fa-regular fa-chart-scatter"></i> Bubble NLP: Word Count vs Text Length';
+        let bubbleData = dataset.slice(0, 60).map(row => ({ x: safeNum(row, 'word_count'), y: safeNum(row, 'text_length'), r: Math.min(20, Math.max(5, safeNum(row, 'avg_word_length', 5) * 2)) }));
+        chart = new Chart(document.getElementById('myChart'), { type: 'bubble', data: { datasets: [{ label: 'Documents', data: bubbleData, backgroundColor: 'rgba(255,107,107,0.7)' }] } });
+    }
+
+    function radarChart() {
+        if (!dataset.length) return;
+        clearChart();
+        document.getElementById('chartTitle').innerHTML = '<i class="fa-regular fa-star-of-life"></i> Writing Style Radar';
+        let metrics = ['word_count', 'text_length', 'avg_word_length', 'unique_words', 'uppercase_count', 'punctuation_count'];
+        let avgVals = metrics.map(m => {
+            let total = dataset.reduce((acc, row) => acc + safeNum(row, m), 0);
+            return (total / dataset.length).toFixed(2);
+        });
+        chart = new Chart(document.getElementById('myChart'), { type: 'radar', data: { labels: metrics, datasets: [{ label: 'Avg Metrics', data: avgVals, backgroundColor: 'rgba(29,209,161,0.25)', borderColor: '#1dd1a1', borderWidth: 2 }] } });
+    }
+
+    function topWordsChart() {
+        if (!dataset.length) return;
+        clearChart();
+        document.getElementById('chartTitle').innerHTML = '<i class="fa-regular fa-keyboard"></i> Top 15 Frequent Words';
+        let freq = {};
+        dataset.slice(0, 1200).forEach(row => {
+            let text = row.text || '';
+            let words = text.toLowerCase().split(/\s+/);
+            words.forEach(w => { if (w.length > 3) freq[w] = (freq[w] || 0) + 1; });
+        });
+        let sorted = Object.entries(freq).sort((a, b) => b[1] - a[1]).slice(0, 15);
+        chart = new Chart(document.getElementById('myChart'), { type: 'bar', data: { labels: sorted.map(s => s[0]), datasets: [{ label: 'Frequency', data: sorted.map(s => s[1]), backgroundColor: chartColors, borderRadius: 12 }] } });
+    }
+
+    function emotionTextChart() {
+        if (!dataset.length) return;
+        clearChart();
+        document.getElementById('chartTitle').innerHTML = '<i class="fa-regular fa-message"></i> Emotion vs Average Text Length';
+        let groups = {};
+        dataset.forEach(row => {
+            let em = row.label_name || row.emotion || 'other';
+            let len = safeNum(row, 'text_length', 0);
+            if (!groups[em]) groups[em] = { sum: 0, count: 0 };
+            groups[em].sum += len;
+            groups[em].count += 1;
+        });
+        let labels = Object.keys(groups);
+        let avgLen = labels.map(l => (groups[l].sum / groups[l].count).toFixed(2));
+        chart = new Chart(document.getElementById('myChart'), { type: 'bar', data: { labels: labels, datasets: [{ label: 'Avg Text Length', data: avgLen, backgroundColor: '#ff9ff3', borderRadius: 12 }] } });
+    }
+</script>
+</body>
+</html>

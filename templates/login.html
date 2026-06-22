@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>EmotionSense | Sign in to AI Emotion Lab</title>
+    <!-- Google Fonts + Font Awesome -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: radial-gradient(ellipse at 20% 30%, #eef2ff, #e0e7ff, #f1f5f9);
+            min-height: 100vh;
+            color: #0f172a;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* animated background orbs */
+        .orb {
+            position: fixed;
+            width: 60vw;
+            height: 60vw;
+            background: radial-gradient(circle, rgba(59,130,246,0.1) 0%, rgba(139,92,246,0.03) 80%);
+            border-radius: 43% 57% 70% 30% / 41% 45% 55% 59%;
+            filter: blur(80px);
+            z-index: -2;
+            pointer-events: none;
+            animation: floatOrb 22s infinite alternate ease-in-out;
+        }
+
+        .orb-1 {
+            top: -20vh;
+            left: -15vw;
+        }
+        .orb-2 {
+            bottom: -15vh;
+            right: -10vw;
+            background: radial-gradient(circle, rgba(236,72,153,0.08), rgba(56,189,248,0.04));
+            animation-duration: 27s;
+            width: 65vw;
+            height: 65vw;
+        }
+
+        @keyframes floatOrb {
+            0% { transform: translate(0, 0) rotate(0deg); }
+            100% { transform: translate(4%, 6%) rotate(6deg); }
+        }
+
+        /* glass navbar */
+        .navbar {
+            width: 90%;
+            max-width: 1300px;
+            margin: 1.2rem auto 0;
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(18px);
+            border-radius: 3rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.8rem 2.2rem;
+            box-shadow: 0 12px 30px -10px rgba(0, 0, 0, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.7);
+            transition: 0.2s;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #1e40af, #3b82f6);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            letter-spacing: -0.3px;
+        }
+
+        .logo i {
+            background: none;
+            -webkit-background-clip: unset;
+            color: #2563eb;
+            font-size: 1.8rem;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            color: #1e293b;
+            transition: 0.2s;
+            position: relative;
+        }
+
+        .nav-links a:after {
+            content: '';
+            position: absolute;
+            bottom: -6px;
+            left: 0;
+            width: 0%;
+            height: 2.5px;
+            background: linear-gradient(90deg, #2563eb, #8b5cf6);
+            border-radius: 4px;
+            transition: 0.25s;
+        }
+
+        .nav-links a:hover {
+            color: #2563eb;
+        }
+        .nav-links a:hover:after {
+            width: 100%;
+        }
+
+        /* main login container */
+        .main {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: calc(100vh - 100px);
+            padding: 2rem 1.5rem;
+        }
+
+        .login-card {
+            max-width: 460px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.94);
+            backdrop-filter: blur(12px);
+            border-radius: 2.5rem;
+            padding: 2.5rem 2rem;
+            box-shadow: 0 30px 45px -20px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(255, 255, 255, 0.6);
+            transition: transform 0.2s ease;
+            border: 1px solid rgba(255, 255, 255, 0.8);
+        }
+
+        .login-card:hover {
+            transform: scale(1.01);
+            box-shadow: 0 40px 55px -18px rgba(37, 99, 235, 0.25);
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .icon-circle {
+            width: 85px;
+            height: 85px;
+            background: linear-gradient(145deg, #2563eb, #4f46e5);
+            border-radius: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.2rem;
+            box-shadow: 0 12px 20px -8px #2563eb70;
+            transition: 0.2s;
+        }
+
+        .icon-circle i {
+            font-size: 2.8rem;
+            color: white;
+        }
+
+        .login-header h1 {
+            font-size: 2rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #0f172a, #1e293b);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 0.5rem;
+        }
+
+        .login-header p {
+            color: #475569;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        /* form groups */
+        .input-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .input-group label {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 0.5rem;
+        }
+
+        .input-group label i {
+            color: #2563eb;
+            font-size: 0.9rem;
+        }
+
+        .input-field {
+            position: relative;
+            width: 100%;
+        }
+
+        .input-field input {
+            width: 100%;
+            padding: 0.9rem 1rem;
+            padding-right: 2.8rem;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 1.5rem;
+            font-size: 0.95rem;
+            font-family: 'Inter', sans-serif;
+            background: white;
+            transition: 0.2s;
+            outline: none;
+        }
+
+        .input-field input:focus {
+            border-color: #2563eb;
+            box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
+        }
+
+        .toggle-password {
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            background: transparent;
+            border: none;
+            color: #94a3b8;
+            cursor: pointer;
+            font-size: 1.1rem;
+            transition: 0.2s;
+        }
+
+        .toggle-password:hover {
+            color: #2563eb;
+        }
+
+        /* extra options row */
+        .options-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 0.5rem 0 1.5rem;
+            font-size: 0.8rem;
+        }
+        .checkbox-label {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            color: #475569;
+        }
+        .forgot-link {
+            color: #2563eb;
+            text-decoration: none;
+            font-weight: 600;
+            border-bottom: 1px dashed #2563eb60;
+        }
+        .forgot-link:hover {
+            color: #1e40af;
+        }
+
+        .login-btn {
+            width: 100%;
+            background: linear-gradient(95deg, #2563eb, #4f46e5);
+            border: none;
+            padding: 1rem;
+            border-radius: 2rem;
+            font-weight: 800;
+            font-size: 1rem;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.7rem;
+            cursor: pointer;
+            transition: all 0.25s;
+            margin-top: 0.2rem;
+            box-shadow: 0 8px 18px -8px #2563eb80;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-3px);
+            background: linear-gradient(95deg, #1d4ed8, #4338ca);
+            box-shadow: 0 18px 28px -12px #2563eb;
+        }
+
+        .bottom-text {
+            text-align: center;
+            margin-top: 1.8rem;
+            font-size: 0.85rem;
+            color: #475569;
+            font-weight: 500;
+        }
+
+        .bottom-text a {
+            color: #2563eb;
+            text-decoration: none;
+            font-weight: 700;
+            border-bottom: 1px dashed #2563eb60;
+        }
+
+        .bottom-text a:hover {
+            color: #1e40af;
+        }
+
+        .demo-cred {
+            margin-top: 1.2rem;
+            background: #f1f5f9d0;
+            border-radius: 1.5rem;
+            padding: 0.6rem;
+            font-size: 0.7rem;
+            text-align: center;
+            color: #334155;
+            backdrop-filter: blur(4px);
+        }
+        .demo-cred span {
+            font-weight: 700;
+            color: #2563eb;
+        }
+
+        /* toast message */
+        .toast-msg {
+            position: fixed;
+            bottom: 25px;
+            left: 50%;
+            transform: translateX(-50%) scale(0.9);
+            background: #1e293b;
+            color: white;
+            padding: 0.7rem 1.5rem;
+            border-radius: 3rem;
+            font-size: 0.85rem;
+            font-weight: 500;
+            opacity: 0;
+            transition: 0.2s;
+            pointer-events: none;
+            z-index: 999;
+            backdrop-filter: blur(8px);
+            background: rgba(15, 23, 42, 0.9);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        @media (max-width: 700px) {
+            .navbar {
+                flex-direction: column;
+                gap: 12px;
+                padding: 1rem 1.5rem;
+                width: 95%;
+            }
+            .nav-links {
+                gap: 1.2rem;
+                justify-content: center;
+            }
+            .login-card {
+                padding: 1.8rem;
+            }
+            .icon-circle {
+                width: 70px;
+                height: 70px;
+            }
+            .icon-circle i {
+                font-size: 2.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
+
+<nav class="navbar">
+    <div class="logo">
+        <i class="fa-regular fa-face-smile"></i> EmotionSense
+    </div>
+    <div class="nav-links">
+        <a href="/">Home</a>
+        <a href="/about">About</a>
+        <a href="/predict">Predict</a>
+        <a href="/login">Login</a>
+        <a href="/register">Register</a>
+    </div>
+</nav>
+
+<section class="main">
+    <div class="login-card">
+        <div class="login-header">
+            <div class="icon-circle">
+                <i class="fa-regular fa-brain"></i>
+            </div>
+            <h1>Welcome back</h1>
+            <p>Sign in to your EmotionSense account</p>
+        </div>
+
+        <form id="loginForm" action="/login" method="POST">
+            <div class="input-group">
+                <label><i class="fa-regular fa-envelope"></i> Email</label>
+                <div class="input-field">
+                    <input type="email" id="email" name="email" placeholder="hello@emotionsense.com" required>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label><i class="fa-regular fa-lock"></i> Password</label>
+                <div class="input-field">
+                    <input type="password" id="password" name="password" placeholder="••••••••" required>
+                    <button type="button" class="toggle-password" id="togglePwdBtn">
+                        <i class="fa-regular fa-eye"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="options-row">
+                <label class="checkbox-label">
+                    <input type="checkbox" id="rememberCheck"> <span>Remember me</span>
+                </label>
+                <a href="#" class="forgot-link" id="forgotLink">Forgot password?</a>
+            </div>
+
+            <button type="submit" class="login-btn">
+                <i class="fa-regular fa-arrow-right-to-bracket"></i> Sign In
+            </button>
+        </form>
+
+        <div class="bottom-text">
+            Don't have an account? <a href="/register">Create account →</a>
+        </div>
+        
+    </div>
+</section>
+
+<div id="toastMsg" class="toast-msg">✨ Welcome back</div>
+
+<script>
+    // DOM elements
+    const emailInput = document.getElementById('email');
+    const passwordInput = document.getElementById('password');
+    const loginForm = document.getElementById('loginForm');
+    const toggleBtn = document.getElementById('togglePwdBtn');
+    const rememberCheck = document.getElementById('rememberCheck');
+    const toast = document.getElementById('toastMsg');
+
+    function showToast(message, isError = false) {
+        toast.textContent = message;
+        toast.style.opacity = '1';
+        toast.style.transform = 'translateX(-50%) scale(1)';
+        toast.style.background = isError ? 'rgba(220, 38, 38, 0.9)' : 'rgba(15, 23, 42, 0.9)';
+        setTimeout(() => {
+            toast.style.opacity = '0';
+            toast.style.transform = 'translateX(-50%) scale(0.9)';
+        }, 2800);
+    }
+
+    // Toggle password visibility
+    toggleBtn.addEventListener('click', function() {
+        const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+        passwordInput.setAttribute('type', type);
+        const icon = toggleBtn.querySelector('i');
+        if (type === 'text') {
+            icon.classList.remove('fa-eye');
+            icon.classList.add('fa-eye-slash');
+        } else {
+            icon.classList.remove('fa-eye-slash');
+            icon.classList.add('fa-eye');
+        }
+    });
+
+    // Simple email validation
+    function isValidEmail(email) {
+        return /^[^\s@]+@([^\s@.,]+\.)+[^\s@.,]{2,}$/.test(email);
+    }
+
+    loginForm.addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    const email = emailInput.value.trim();
+    const password = passwordInput.value;
+
+    if (!email) {
+        showToast('📧 Please enter your email address', true);
+        emailInput.focus();
+        return;
+    }
+
+    if (!isValidEmail(email)) {
+        showToast('⚠️ Enter a valid email', true);
+        return;
+    }
+
+    if (!password) {
+        showToast('🔐 Please enter your password', true);
+        passwordInput.focus();
+        return;
+    }
+
+    // Allow Flask backend to handle login
+    loginForm.submit();
+});
+    
+    
+
+    // Forgot password simulation
+    const forgotBtn = document.getElementById('forgotLink');
+    forgotBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        showToast('📩 Password reset link sent to your registered email (demo mode)', false);
+    });
+
+    // load remembered email if exists (optional)
+    if (localStorage.getItem('rememberEmail')) {
+        emailInput.value = localStorage.getItem('rememberEmail');
+        rememberCheck.checked = true;
+    }
+</script>
+</body>
+</html>

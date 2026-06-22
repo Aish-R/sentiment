@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>EmotionSense | About AI Emotion Intelligence</title>
+    <!-- Google Fonts & Font Awesome -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: radial-gradient(ellipse at 20% 30%, #eef2ff, #e0e7ff, #f1f5f9);
+            min-height: 100vh;
+            color: #0f172a;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* floating animated blobs */
+        .orb {
+            position: fixed;
+            width: 65vw;
+            height: 65vw;
+            background: radial-gradient(circle, rgba(59,130,246,0.1) 0%, rgba(139,92,246,0.03) 80%);
+            border-radius: 47% 53% 68% 32% / 38% 45% 55% 62%;
+            filter: blur(90px);
+            z-index: -2;
+            pointer-events: none;
+            animation: floatOrb 24s infinite alternate ease-in-out;
+        }
+        .orb-1 { top: -20vh; left: -15vw; }
+        .orb-2 {
+            bottom: -15vh; right: -10vw;
+            background: radial-gradient(circle, rgba(236,72,153,0.08), rgba(56,189,248,0.04));
+            animation-duration: 28s;
+            width: 70vw;
+            height: 70vw;
+        }
+        @keyframes floatOrb {
+            0% { transform: translate(0, 0) rotate(0deg); }
+            100% { transform: translate(5%, 7%) rotate(6deg); }
+        }
+
+        /* glass navbar */
+        .navbar {
+            width: 90%;
+            max-width: 1300px;
+            margin: 1.2rem auto 0;
+            background: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(18px);
+            border-radius: 3rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.8rem 2.2rem;
+            box-shadow: 0 12px 30px -10px rgba(0, 0, 0, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.7);
+            transition: 0.2s;
+            flex-wrap: wrap;
+        }
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #1e40af, #3b82f6);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            letter-spacing: -0.3px;
+        }
+        .logo i {
+            background: none;
+            -webkit-background-clip: unset;
+            color: #2563eb;
+            font-size: 1.8rem;
+        }
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+        .nav-links a {
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            color: #1e293b;
+            transition: 0.2s;
+            position: relative;
+        }
+        .nav-links a:after {
+            content: '';
+            position: absolute;
+            bottom: -6px;
+            left: 0;
+            width: 0%;
+            height: 2.5px;
+            background: linear-gradient(90deg, #2563eb, #8b5cf6);
+            border-radius: 4px;
+            transition: 0.25s;
+        }
+        .nav-links a:hover { color: #2563eb; }
+        .nav-links a:hover:after { width: 100%; }
+
+        /* hero section */
+        .hero {
+            text-align: center;
+            padding: 4rem 1rem 3rem;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        .hero-badge {
+            display: inline-block;
+            background: rgba(37,99,235,0.12);
+            backdrop-filter: blur(4px);
+            padding: 0.3rem 1.2rem;
+            border-radius: 40px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #2563eb;
+            margin-bottom: 1.5rem;
+            border: 1px solid rgba(37,99,235,0.25);
+        }
+        .hero h1 {
+            font-size: 3.2rem;
+            font-weight: 800;
+            line-height: 1.2;
+            margin-bottom: 1.2rem;
+            background: linear-gradient(135deg, #0f172a, #1e293b);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        .hero h1 span {
+            background: linear-gradient(120deg, #2563eb, #8b5cf6);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        .hero p {
+            font-size: 1.1rem;
+            color: #334155;
+            line-height: 1.6;
+            max-width: 750px;
+            margin: 0 auto;
+        }
+
+        /* container for cards */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto 4rem;
+            padding: 0 1.5rem;
+        }
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            border-radius: 2rem;
+            padding: 2rem;
+            transition: all 0.25s ease;
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            box-shadow: 0 10px 25px -12px rgba(0, 0, 0, 0.08);
+        }
+        .glass-card:hover {
+            transform: translateY(-6px);
+            background: rgba(255, 255, 255, 0.95);
+            box-shadow: 0 25px 35px -16px rgba(37,99,235,0.2);
+            border-color: rgba(37,99,235,0.2);
+        }
+        .card-icon {
+            width: 65px;
+            height: 65px;
+            background: linear-gradient(145deg, #2563eb, #4f46e5);
+            border-radius: 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+        }
+        .card-icon i {
+            font-size: 2rem;
+            color: white;
+        }
+        .glass-card h2 {
+            font-size: 1.6rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: #0f172a;
+        }
+        .glass-card p {
+            color: #475569;
+            line-height: 1.6;
+            font-size: 0.95rem;
+        }
+
+        /* feature section (two-column style) */
+        .feature-section {
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(8px);
+            border-radius: 2.5rem;
+            padding: 2rem 2rem 2.2rem;
+            margin: 1.5rem 0;
+            border: 1px solid rgba(255,255,255,0.7);
+        }
+        .section-title {
+            font-size: 2rem;
+            font-weight: 800;
+            text-align: center;
+            margin-bottom: 2rem;
+            background: linear-gradient(135deg, #1e293b, #2d3a5e);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 1.8rem;
+        }
+        .feature-item {
+            background: white;
+            border-radius: 1.5rem;
+            padding: 1.5rem;
+            transition: 0.2s;
+            box-shadow: 0 5px 12px rgba(0,0,0,0.02);
+            border: 1px solid #eef2ff;
+        }
+        .feature-item h3 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: #2563eb;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .feature-item ul {
+            list-style: none;
+            padding-left: 0;
+        }
+        .feature-item li {
+            margin-bottom: 0.6rem;
+            color: #475569;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+        }
+        .feature-item li i {
+            color: #2563eb;
+            font-size: 0.8rem;
+            width: 20px;
+        }
+        /* footer */
+        footer {
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(8px);
+            text-align: center;
+            padding: 1.8rem;
+            color: #cbd5e1;
+            font-size: 0.8rem;
+            border-radius: 2rem 2rem 0 0;
+            margin-top: 3rem;
+        }
+        footer i {
+            margin: 0 4px;
+        }
+        @media (max-width: 768px) {
+            .navbar { flex-direction: column; gap: 12px; padding: 1rem 1.5rem; width: 95%; }
+            .nav-links { justify-content: center; gap: 1.2rem; }
+            .hero h1 { font-size: 2.2rem; }
+            .section-title { font-size: 1.6rem; }
+            .glass-card { padding: 1.5rem; }
+        }
+        @media (max-width: 480px) {
+            .container { padding: 0 1rem; }
+            .feature-section { padding: 1.2rem; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
+
+<!-- glass navbar matching index style -->
+<nav class="navbar">
+    <div class="logo">
+        <i class="fa-regular fa-face-smile"></i> EmotionSense
+    </div>
+    <div class="nav-links">
+        <a href="/">Home</a>
+        <a href="/about" style="color:#2563eb; font-weight:800;">About</a>
+        <a href="/predict">Predict</a>
+        <a href="/login">Login</a>
+        <a href="/register">Register</a>
+        <a href="/analyze">Analyze</a>
+    </div>
+</nav>
+
+<!-- hero -->
+<section class="hero">
+    <div class="hero-badge">
+        <i class="fa-regular fa-microchip"></i> Next‑Gen Emotion AI
+    </div>
+    <h1>Understanding emotions through <span>intelligent AI</span></h1>
+    <p>EmotionSense is a state‑of‑the‑art emotion detection system powered by the RoBERTa deep learning architecture. It decodes human emotions from text with remarkable accuracy, providing real‑time predictions and explainable insights.</p>
+</section>
+
+<div class="container">
+    <!-- three main cards -->
+    <div class="cards-grid">
+        <div class="glass-card">
+            <div class="card-icon"><i class="fa-solid fa-brain"></i></div>
+            <h2>RoBERTa Transformer</h2>
+            <p>Fine‑tuned on diverse emotion datasets, our model achieves superior contextual understanding. It captures subtle linguistic nuances and delivers robust multi‑class emotion classification.</p>
+        </div>
+        <div class="glass-card">
+            <div class="card-icon"><i class="fa-solid fa-chart-line"></i></div>
+            <h2>Real‑Time Analytics</h2>
+            <p>Sub‑second latency predictions with intelligent caching. Every input is processed instantly, making EmotionSense ideal for live feedback, chat analysis, and interactive applications.</p>
+        </div>
+        <div class="glass-card">
+            <div class="card-icon"><i class="fa-solid fa-database"></i></div>
+            <h2>Rich Metrics & Explainability</h2>
+            <p>We provide detailed performance metrics: Accuracy, Precision, Recall, F1‑Score, and confidence levels. Attention maps and token importance are available for full transparency.</p>
+        </div>
+    </div>
+
+    <!-- combined feature grid (core, classes, tech, metrics) -->
+    <div class="feature-section">
+        <div class="section-title">
+            <i class="fa-regular fa-cubes"></i> Project Ecosystem
+        </div>
+        <div class="feature-grid">
+            <div class="feature-item">
+                <h3><i class="fa-regular fa-star"></i> Core Features</h3>
+                <ul>
+                    <li><i class="fa-regular fa-check-circle"></i> Emotion detection with RoBERTa</li>
+                    <li><i class="fa-regular fa-clock"></i> Real‑time text prediction</li>
+                    <li><i class="fa-regular fa-language"></i> Transformer‑based NLP</li>
+                    <li><i class="fa-regular fa-chart-simple"></i> 4‑class emotion classification</li>
+                </ul>
+            </div>
+            <div class="feature-item">
+                <h3><i class="fa-regular fa-face-smile"></i> Emotion Classes</h3>
+                <ul>
+                    <li><i class="fa-regular fa-face-grin"></i> Positive</li>
+                    <li><i class="fa-regular fa-face-frown"></i> Negative</li>
+                    <li><i class="fa-regular fa-face-meh"></i> Neutral</li>
+                    <li><i class="fa-regular fa-face-surprise"></i> Fear / Surprise</li>
+                </ul>
+            </div>
+            <div class="feature-item">
+                <h3><i class="fa-regular fa-code"></i> Technologies</h3>
+                <ul>
+                    <li><i class="fa-regular fa-python"></i> Python & Flask</li>
+                    <li><i class="fa-regular fa-fire"></i> PyTorch</li>
+                    <li><i class="fa-regular fa-robot"></i> HuggingFace Transformers</li>
+                    <li><i class="fa-regular fa-chart-line"></i> Chart.js for live viz</li>
+                </ul>
+            </div>
+            <div class="feature-item">
+                <h3><i class="fa-regular fa-chart-scatter"></i> Performance Metrics</h3>
+                <ul>
+                    <li><i class="fa-regular fa-bullseye"></i> Accuracy & Precision</li>
+                    <li><i class="fa-regular fa-list"></i> Recall & F1‑Score</li>
+                    <li><i class="fa-regular fa-chart-pie"></i> Confidence scoring</li>
+                    <li><i class="fa-regular fa-diagram-project"></i> Confusion Matrix</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- additional insight card -->
+    <div class="glass-card" style="margin-top: 1rem; background: rgba(255,255,245,0.8);">
+        <div style="display: flex; gap: 1rem; flex-wrap: wrap; align-items: center; justify-content: space-between;">
+            <div>
+                <h2 style="font-size: 1.4rem;"><i class="fa-regular fa-chart-network"></i> Built for empathy & accuracy</h2>
+                <p style="margin-top: 0.5rem;">EmotionSense combines cutting‑edge transformer models with intuitive dashboards, making emotion AI accessible for researchers, developers, and businesses.</p>
+            </div>
+            <a href="/predict" class="btn-try" style="background: linear-gradient(95deg, #2563eb, #4f46e5); padding: 0.7rem 1.8rem; border-radius: 2rem; color: white; text-decoration: none; font-weight: 700; white-space: nowrap;"><i class="fa-regular fa-play"></i> Try Live Demo</a>
+        </div>
+    </div>
+</div>
+
+<footer>
+    <i class="fa-regular fa-heart" style="color:#ec489a;"></i> EmotionSense — AI Emotion Detection using RoBERTa & Transformers 
+    <i class="fa-regular fa-brain"></i>
+</footer>
+
+</body>
+</html>
