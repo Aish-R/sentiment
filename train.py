@@ -39,7 +39,7 @@ from sklearn.preprocessing import label_binarize
 # LOAD DATASET
 # ============================================================
 
-file_path = r"C:\Users\YourName\Desktop\balanced_4class_roberta_dataset.csv"
+file_path = r"balanced_4class_roberta_dataset.csv"
 
 df = pd.read_csv(file_path)
 
@@ -51,7 +51,7 @@ print("\nDATASET SHAPE :", df.shape)
 # REMOVE NULL VALUES
 # ============================================================
 
-df = df.dropna()
+df = df.dropna(subset=['text', 'label'])
 
 # ============================================================
 # CLEAN TEXT
@@ -78,10 +78,19 @@ def clean_text(text):
 df["text"] = df["text"].apply(clean_text)
 
 # ============================================================
-# REMOVE SHORT TEXT
+# REMOVE SHORT TEXT AND RESET INDEX
 # ============================================================
 
-df = df[df["text"].str.len() > 5]
+df = df[df["text"].str.len() > 5].reset_index(drop=True)
+
+print(f"\nDataset after filtering short text: {df.shape}")
+print(f"NaN in label after filtering: {df['label'].isna().sum()}")
+
+# ============================================================
+# ENSURE NO NaN VALUES
+# ============================================================
+
+df = df.dropna().reset_index(drop=True)
 
 # ============================================================
 # LABELS
@@ -105,7 +114,9 @@ id2label = {
 # CONVERT LABELS TO NUMBERS
 # ============================================================
 
-df["label"] = df["label"].map(label2id)
+# Labels are already numeric (0-3), so no conversion needed
+# Just ensure they're integers
+df["label"] = df["label"].astype(int)
 
 # ============================================================
 # TRAIN TEST SPLIT
@@ -385,7 +396,7 @@ plt.show()
 # SAVE MODEL
 # ============================================================
 
-save_model_path = r"C:\Users\YourName\Desktop\best_roberta_emotion_model"
+save_model_path = r"best_roberta_emotion_model"
 
 model.save_pretrained(save_model_path)
 
